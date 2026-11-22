@@ -1,22 +1,27 @@
-PYTHON ?= python3
-VENV ?= .venv
+UV ?= uv
 
-.PHONY: install run clean lint format
+.PHONY: install run debug clean lint lint-strict format
 
 install:
-	@test -x "$(VENV)/bin/python" || $(PYTHON) -m venv "$(VENV)"
-	$(VENV)/bin/python -m ensurepip --upgrade
-	$(VENV)/bin/python -m pip install ./assets/llm_sdk -e ".[dev]"
+	$(UV) sync --locked
 
 run:
-	$(VENV)/bin/python -m src $(ARGS)
+	$(UV) run python -m src $(ARGS)
+
+debug:
+	$(UV) run python -m pdb -m src $(ARGS)
 
 clean:
 	find src -type d -name __pycache__ -prune -exec rm -rf {} +
 	rm -rf .mypy_cache
 
 lint:
-	$(VENV)/bin/python -m flake8 .
+	$(UV) run flake8 .
+	$(UV) run mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+
+lint-strict:
+	$(UV) run flake8 .
+	$(UV) run mypy . --strict
 
 format:
-	$(VENV)/bin/python -m autopep8 --in-place --recursive --max-line-length 79 src
+	$(UV) run autopep8 --in-place --recursive --max-line-length 79 src

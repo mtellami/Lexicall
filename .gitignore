@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 .mypy_cache/
 .cache/
-assets/data/output/
+data/output/
 output/
 *.egg-info/
 build/

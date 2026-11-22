@@ -26,13 +26,13 @@ def parser() -> argparse.ArgumentParser:
     cli = argparse.ArgumentParser(prog="Lexicall", description=__doc__)
     cli.add_argument("--functions_definition", type=Path,
                      default=Path(
-                         "assets/data/input/functions_definition.json"))
+                         "data/input/functions_definition.json"))
     cli.add_argument("--input", type=Path,
                      default=Path(
-                         "assets/data/input/function_calling_tests.json"))
+                         "data/input/function_calling_tests.json"))
     cli.add_argument("--output", type=Path,
                      default=Path(
-                         "assets/data/output/function_calling_results.json"))
+                         "data/output/function_calling_results.json"))
     cli.add_argument("--model", choices=MODELS, default=MODELS[0])
     cli.add_argument("--device", choices=("cpu", "cuda", "mps"))
     cli.add_argument("--visualize", action="store_true")

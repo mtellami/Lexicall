@@ -1,3 +1,5 @@
+*This project has been created as part of the 42 curriculum by mtellami.*
+
 # Lexicall
 
 ## Description
@@ -22,21 +24,30 @@ two model profiles, and an optional terminal generation trace.
 
 ## Instructions
 
-Use Python 3.10 or later (Python 3.12 is recommended), then run:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and use
+Python 3.10 or later (the repository selects Python 3.12 by default). From the
+repository root, run the evaluator's commands:
+
+```bash
+uv sync
+uv run python -m src
+```
+
+The equivalent Makefile workflow uses the committed lockfile:
 
 ```bash
 make install
 make run
 ```
 
-`make install` creates `.venv`, bootstraps pip, and installs the application,
-formatting and lint tools, and the supplied SDK from `assets/llm_sdk/`. To choose
-the interpreter when creating a new environment, use
-`make install PYTHON=python3.12`. You can
-also override the environment directory with `VENV=/path/to/venv`.
-The SDK's internal
-PyTorch and Transformers dependencies perform inference; application code
-does not import those libraries or inspect SDK private attributes.
+`uv sync` creates `.venv` and installs the application, development tools, and
+the bundled SDK from `llm_sdk/`. `uv.lock` records the resolved dependencies;
+`make install` uses `uv sync --locked` to verify that it is current. To select
+another supported interpreter when creating an environment, use
+`uv sync --python python3.12`. To select another environment directory, set
+`UV_PROJECT_ENVIRONMENT=/path/to/venv` for uv or Makefile commands.
+The SDK declares and uses PyTorch, Transformers, and Accelerate for inference;
+application code does not import those libraries or inspect SDK private attributes.
 
 The first inference run downloads model and tokenizer files from Hugging Face.
 Allow several gigabytes of disk space for dependencies and model caches.
@@ -47,20 +58,24 @@ defaults to four and can be overridden with `OMP_NUM_THREADS`.
 ### Example usage
 
 ```bash
-make run ARGS="--functions_definition assets/data/input/functions_definition.json \
-  --input assets/data/input/function_calling_tests.json \
-  --output assets/data/output/function_calling_results.json"
+uv run python -m src --functions_definition data/input/functions_definition.json \
+  --input data/input/function_calling_tests.json \
+  --output data/output/function_calling_results.json
 
 make run ARGS="--model Qwen/Qwen2.5-0.5B-Instruct"
 make run ARGS="--device cpu --visualize"
 make run ARGS="--max-new-tokens 256"
+make debug ARGS="--device cpu"
 make lint
+make lint-strict
 make format
 make clean
 ```
 
 `install` sets up the environment and installs dependencies. `run` starts the
-CLI, `lint` checks the code with flake8, and
+CLI, and `debug` starts it in Python's built-in debugger (`pdb`); use `n` to
+step, `c` to continue, and `q` to quit. `lint` runs flake8 and mypy with the
+assignment's required flags; `lint-strict` runs flake8 and strict mypy.
 `clean` removes Python and mypy caches while keeping the installed environment.
 `format` applies autopep8 to `src/` to fix style issues. Run `lint` afterward
 to check for any remaining issues that require manual changes.
@@ -211,10 +226,10 @@ validation results below record checks performed during implementation.
 For manual lint and type checks, run:
 
 ```bash
-.venv/bin/python -m flake8 .
-.venv/bin/python -m mypy . --warn-return-any --warn-unused-ignores \
+uv run flake8 .
+uv run mypy . --warn-return-any --warn-unused-ignores \
   --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
-.venv/bin/python -m mypy . --strict
+uv run mypy . --strict
 ```
 
 The supplied SDK is treated as vendor code and excluded from application
@@ -262,6 +277,19 @@ was correct for all 20 held-out requests; this argument error was the sole miss.
   prompts reduce application overhead without accessing private internals.
 
 ## Resources
+
+### AI assistance
+
+AI assistance was used to inspect and explain the implementation, describe
+tokenization and constrained generation, draft `ARCHITECTURE.md` and its Mermaid
+diagrams, and audit the repository against the assignment PDF. It also assisted
+with restoring the required directory layout, uv dependency setup, Makefile
+commands, and documentation, and with running validation checks. These statements
+describe the assistance recorded in the current development conversation; they
+do not establish how earlier versions of the implementation were authored.
+The author remains responsible for understanding and verifying the submitted code.
+
+### References
 
 - [Qwen3-0.6B model card](https://huggingface.co/Qwen/Qwen3-0.6B)
   and [tokenizer configuration](https://huggingface.co/Qwen/Qwen3-0.6B/blob/main/tokenizer_config.json).

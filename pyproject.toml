@@ -8,12 +8,13 @@ dependencies = [
     "numpy>=1.26",
     "pydantic>=2.10,<3",
     "regex>=2024.11.6",
-    "transformers>=4.51,<5",
-    "accelerate>=1.0",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = ["autopep8>=2.3", "flake8>=7", "mypy>=1.14", "types-regex"]
+
+[tool.uv.sources]
+llm-sdk = { path = "llm_sdk" }
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -23,7 +24,7 @@ build-backend = "setuptools.build_meta"
 packages = ["src"]
 
 [tool.mypy]
-exclude = ["^assets/llm_sdk/"]
+exclude = ["^llm_sdk/"]
 follow_imports = "silent"
 
 [[tool.mypy.overrides]]

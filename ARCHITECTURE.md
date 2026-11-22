@@ -5,7 +5,7 @@ receives text and predicts tokens, then see how Lexicall turns those predictions
 into validated function calls. The diagrams and implementation details describe
 the code currently in this repository.
 
-## 1. What are we building?
+## 1. What is Lexicall?
 
 Lexicall translates a natural-language request into a structured description of
 a function call:
